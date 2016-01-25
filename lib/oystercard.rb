@@ -23,13 +23,13 @@ class Oystercard
   end
 
   def touch_out
-    deduct(1)
+    deduct(DEFAULT_MIN)
     @entry_station = nil
     #@in_use = false
   end
 
   def in_journey?
-    @entry_station ? true : false
+    @entry_station
   end
 
   private
