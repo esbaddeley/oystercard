@@ -8,9 +8,9 @@ subject(:oystercard) {described_class.new}
       expect(oystercard.balance).to eq 0
     end
 
-    # it "sets 'in_use' to false on initialization" do
-    #   expect(oystercard.in_use).to eq false
-    # end
+    xit "sets 'in_use' to false on initialization" do
+      expect(oystercard.in_use).to eq false
+    end
 
   end
 
@@ -29,19 +29,19 @@ subject(:oystercard) {described_class.new}
     end
   end
 
-  # describe "#deduct" do
-  #   it "Allows balance to be reduced when money deducted" do
-  #     expect(oystercard.deduct(10)).to eq oystercard.balance
-  #   end
-  # end
+  xdescribe "#deduct" do
+   xit "Allows balance to be reduced when money deducted" do
+     expect(oystercard.deduct(10)).to eq oystercard.balance
+   end
+  end
 
   describe "#touch_in" do
     let(:entry_station) {double(:entry_station)}
 
-    # it "Card shows as in_use after touch_in" do
-    #   oystercard.instance_variable_set("@balance", 1)
-    #   expect(oystercard.touch_in(entry_station)).to eq true
-    # end
+    xit "Card shows as in_use after touch_in" do
+      oystercard.instance_variable_set("@balance", 1)
+      expect(oystercard.touch_in(entry_station)).to eq true
+    end
 
     it "Check min balance on touch_in" do
       expect{oystercard.touch_in(entry_station)}.to raise_error("Balance under #{Oystercard::DEFAULT_MIN}")
@@ -59,9 +59,9 @@ subject(:oystercard) {described_class.new}
     let(:entry_station) {double(:entry_station)}
 
 
-    # it "Card shows as not in_use after touch_out" do
-    #   expect(oystercard.touch_out).to eq false
-    # end
+    xit "Card shows as not in_use after touch_out" do
+      expect(oystercard.touch_out).to eq false
+    end
 
     it "Cost for journey is deducted on touch_out" do
       oystercard.instance_variable_set("@balance", 1)
