@@ -40,10 +40,6 @@ describe Oystercard do
         expect{oystercard.touch_in(entry_station)}.to change{oystercard.in_journey?}.to true
       end
 
-      it 'records the station where oystercard is touched in' do
-        oystercard.touch_in(entry_station)
-        expect(oystercard.entry_station).to eq entry_station
-      end
     end
 
     context 'when balance is under £1' do
@@ -67,19 +63,12 @@ describe Oystercard do
       expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
     end
 
-    it 'sets entry station to nil' do
-      expect{oystercard.touch_out(exit_station)}.to change{oystercard.entry_station}.to nil
-    end
 
-    it 'records the station where the oyster card is touched out' do
-      oystercard.touch_out(exit_station)
-      expect(oystercard.exit_station).to eq exit_station
-    end
-
-    let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
+    let(:journey) { double("journey", end_journey: "Old Street") }
 
     it 'records a journey' do
-      oystercard.touch_out(exit_station)
+      oystercard.
+      oystercard.touch_out("Old Street")
       expect(oystercard.journeys).to include journey
     end
   end
