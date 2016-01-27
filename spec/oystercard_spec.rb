@@ -46,7 +46,22 @@ describe Oystercard do
       it 'raises an error' do
         expect{oystercard.touch_in(entry_station)}.to raise_error 'Balance is too low'
       end
+
     end
+
+    context 'oystercard was not touched out' do
+      before do
+        oystercard.top_up(50)
+        oystercard.touch_in(entry_station)
+      end
+
+        it 'deducts a penalty fare' do
+          expect{oystercard.touch_in(entry_station)}.to change{oystercard.balance}.by -(Oystercard::PENALTY_FARE)
+        end
+
+
+    end
+
   end
 
   describe '#touch_out' do
@@ -63,13 +78,23 @@ describe Oystercard do
       expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
     end
 
+    context 'oystercard was not touched in' do
+      before {oystercard.touch_out(exit_station)}
+
+      it 'deducts the penalty fare' do
+        expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::PENALTY_FARE)
+      end
+
+
+    end
+
 
     let(:journey) { double("journey", end_journey: "Old Street") }
 
     it 'records a journey' do
-      oystercard.instance_variable_set("@current_journey", journey)
+      oystercard.touch_in("Aldgate")
       oystercard.touch_out("Old Street")
-      expect(oystercard.journeys).to include journey
+      expect(oystercard.journeys.pop).to have_attributes(:entry_station => "Aldgate", :exit_station => "Old Street")
     end
   end
 
