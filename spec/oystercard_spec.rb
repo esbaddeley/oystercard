@@ -67,7 +67,7 @@ describe Oystercard do
     let(:journey) { double("journey", end_journey: "Old Street") }
 
     it 'records a journey' do
-      oystercard.
+      oystercard.instance_variable_set("@current_journey", journey)
       oystercard.touch_out("Old Street")
       expect(oystercard.journeys).to include journey
     end
