@@ -10,9 +10,15 @@ class Journey
 
   def end_journey(station)
     @exit_station = station
+    calculate_fare
   end
 
   def calculate_fare
-    entry_station == nil || exit_station == nil ? Oystercard::PENALTY_FARE : Oystercard::MIN_FARE
+    complete? ? Oystercard::MIN_FARE : Oystercard::PENALTY_FARE
   end
+
+  def complete?
+    !!@entry_station && !!@exit_station
+  end
+
 end

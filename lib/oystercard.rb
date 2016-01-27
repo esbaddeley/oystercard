@@ -1,7 +1,8 @@
 require_relative 'journey'
 
 class Oystercard
-  attr_reader :balance, :journeys
+
+  attr_reader :balance
 
   DEFAULT_BALANCE = 0
   MAX_BALANCE = 90
@@ -15,7 +16,7 @@ class Oystercard
   end
 
   def top_up(amount)
-    raise "You may not exceed £#{MAX_BALANCE}" if @balance + amount > MAX_BALANCE
+    max_balance_error(amount)
     @balance += amount
   end
 
@@ -24,23 +25,48 @@ class Oystercard
   end
 
   def touch_in(station)
-    raise 'Balance is too low' if @balance < MIN_BALANCE
+    balance_too_low_error
     deduct(@current_journey.calculate_fare) if in_journey?
-    @current_journey = Journey.new(station)
+    create_a_journey(station)
   end
 
   def touch_out(station)
-    @current_journey = Journey.new(nil) if !in_journey?
-    @current_journey.end_journey(station)
-    deduct(@current_journey.calculate_fare)
-    @journeys << @current_journey
-    @current_journey = nil
+    create_a_journey(nil) if !in_journey?
+    deduct(@current_journey.end_journey(station))
+    add_to_journey_history
   end
 
+  def return_journeys
+    @journeys.dup
+  end
+
+
   private
+
+  attr_reader :journeys
 
   def deduct(amount)
     @balance -= amount
   end
-  #test change
+
+  def add_to_journey_history
+    @journeys << @current_journey
+    @current_journey = nil
+  end
+
+  def max_balance_error(amount)
+    raise "You may not exceed £#{MAX_BALANCE}" if @balance + amount > MAX_BALANCE
+  end
+
+  def balance_too_low_error
+    raise 'Balance is too low' if @balance < MIN_BALANCE
+  end
+
+  def create_a_journey(station)
+    station == nil ? @current_journey = Journey.new(nil) : @current_journey = Journey.new(station)
+  end
+
+
+
+
 end

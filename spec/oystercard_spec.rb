@@ -5,15 +5,17 @@ describe Oystercard do
   let(:exit_station) { double :station}
 
   subject(:oystercard) { described_class.new }
+
   it 'has a default balance of 0' do
-    expect(oystercard.balance).to eq 0
+    expect(oystercard.balance). to eq 0
   end
 
   it 'keeps track of journeys' do
-    expect(oystercard.journeys).to be_empty
+    expect(oystercard.return_journeys).to be_empty
   end
 
   describe '#top_up' do
+
     it 'tops up the oystercard by the amount passed in' do
       expect{oystercard.top_up(5)}.to change{oystercard.balance}.by 5
     end
@@ -25,12 +27,20 @@ describe Oystercard do
   end
 
   describe '#in_journey?' do
+
     it 'defaults to false' do
       expect(oystercard).to_not be_in_journey
     end
+
+    it 'returns true if the oystercard has been touched in' do
+      oystercard.touch_in(entry_station)
+      expect(oystercard).to be_in_journey
+    end
+
   end
 
   describe '#touch_in' do
+
     context 'oystercard is topped up' do
       before do
         oystercard.top_up(1)
@@ -85,16 +95,14 @@ describe Oystercard do
         expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::PENALTY_FARE)
       end
 
-
     end
-
 
     let(:journey) { double("journey", end_journey: "Old Street") }
 
     it 'records a journey' do
       oystercard.touch_in("Aldgate")
       oystercard.touch_out("Old Street")
-      expect(oystercard.journeys.pop).to have_attributes(:entry_station => "Aldgate", :exit_station => "Old Street")
+      expect(oystercard.return_journeys.pop).to have_attributes(:entry_station => "Aldgate", :exit_station => "Old Street")
     end
   end
 

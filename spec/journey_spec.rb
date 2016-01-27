@@ -28,15 +28,35 @@ describe Journey do
     end
 
     context 'it is an invalid journey' do
-      it 'charges the penalty fare when theres no valid entry station' do
-        journey.instance_variable_set("@entry_station", nil)
 
+      it 'charges the penalty fare when theres no valid entry station' do
+        journey = Journey.new(nil)
         expect(journey.calculate_fare).to eq Oystercard::PENALTY_FARE
       end
 
-
+      it 'charges the penalty fare when there is no valid exit station' do
+        expect(journey.calculate_fare).to eq Oystercard::PENALTY_FARE
+      end
 
     end
+
+  describe '#complete?' do
+
+      it 'returns true when there is an exit and entry station' do
+        journey.end_journey(station)
+        expect(journey).to be_complete
+      end
+
+      it 'returns false if there is not an entry station' do
+        journey = Journey.new(nil)
+        expect(journey).not_to be_complete
+      end
+
+      it 'returns false if there is not an exit station' do
+        expect(journey).not_to be_complete
+      end
+
+  end
 
   end
 
