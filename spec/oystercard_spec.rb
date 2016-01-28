@@ -1,8 +1,8 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:entry_station) { double :station}
-  let(:exit_station) { double :station}
+  let(:entry_station) { double(:station, :name => "Aldgate East", :zone => 1)}
+  let(:exit_station) { double(:station, :name => "Old Street", :zone => 2)}
 
   subject(:oystercard) { described_class.new }
 
@@ -33,6 +33,7 @@ describe Oystercard do
     end
 
     it 'returns true if the oystercard has been touched in' do
+      oystercard.top_up(1)
       oystercard.touch_in(entry_station)
       expect(oystercard).to be_in_journey
     end
@@ -85,7 +86,7 @@ describe Oystercard do
     end
 
     it 'deducts the minimum amount' do
-      expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
+      expect{oystercard.touch_out(entry_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
     end
 
     context 'oystercard was not touched in' do
@@ -97,12 +98,10 @@ describe Oystercard do
 
     end
 
-    let(:journey) { double("journey", end_journey: "Old Street") }
-
     it 'records a journey' do
-      oystercard.touch_in("Aldgate")
-      oystercard.touch_out("Old Street")
-      expect(oystercard.return_journeys.pop).to have_attributes(:entry_station => "Aldgate", :exit_station => "Old Street")
+      oystercard.touch_in(entry_station)
+      oystercard.touch_out(exit_station)
+      expect(oystercard.return_journeys.pop).to have_attributes(:entry_station => entry_station, :exit_station => exit_station)
     end
   end
 

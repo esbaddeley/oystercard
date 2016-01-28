@@ -1,7 +1,7 @@
 require 'station'
 
 describe Station do
-  subject(:station) {described_class.new(name: "Aldgate", zone: 1)}
+  subject(:station) {described_class.new("Aldgate", 1)}
 
 
   it 'records a stations name' do
