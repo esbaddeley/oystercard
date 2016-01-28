@@ -11,10 +11,10 @@ class Oystercard
   ZONE_FARE = 1
   PENALTY_FARE = 6
 
-  def initialize(balance = DEFAULT_BALANCE, journey_klass = Journey)
+  def initialize(balance = DEFAULT_BALANCE, journey_log_klass = JourneyLog)
     @balance = balance
     @journeys = []
-    @journey_klass = journey_klass
+    @journey_log_klass = journey_log_klass.new
   end
 
   def top_up(amount)
@@ -28,8 +28,8 @@ class Oystercard
 
   def touch_in(station)
     balance_too_low_error
-    deduct(@current_journey.calculate_fare) if in_journey?
-    create_a_journey(station)
+    @journey_log_klass.start_journey(station)
+    deduct(@current_journey.calculate_fare)
   end
 
   def touch_out(station)
@@ -65,7 +65,7 @@ class Oystercard
   end
 
   def create_a_journey(station)
-    station == nil ? @current_journey = @journey_klass.new(nil) : @current_journey = @journey_klass.new(station)
+    station == nil ? @current_journey = Journey.new(nil) : @current_journey = Journey.new(station)
   end
 
 

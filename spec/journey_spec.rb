@@ -53,7 +53,7 @@ describe Journey do
     end
 
   describe '#complete?' do
-
+in
       it 'returns true when there is an exit and entry station' do
         journey.end_journey(station)
         expect(journey).to be_complete
