@@ -11,9 +11,10 @@ class Oystercard
   ZONE_FARE = 1
   PENALTY_FARE = 6
 
-  def initialize(balance = DEFAULT_BALANCE)
+  def initialize(balance = DEFAULT_BALANCE, journey_klass = Journey)
     @balance = balance
     @journeys = []
+    @journey_klass = journey_klass
   end
 
   def top_up(amount)
@@ -64,7 +65,7 @@ class Oystercard
   end
 
   def create_a_journey(station)
-    station == nil ? @current_journey = Journey.new(nil) : @current_journey = Journey.new(station)
+    station == nil ? @current_journey = @journey_klass.new(nil) : @current_journey = @journey_klass.new(station)
   end
 
 
